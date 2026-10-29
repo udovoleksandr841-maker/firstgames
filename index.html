@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d172b">
+  <meta name="description" content="Математичні пригоди: вивчай НСД і НСК та тренуйся на телефоні.">
+  <title>Математичні пригоди — НСД і НСК</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-text-size-adjust: 100%;
+      --background: #0d172b;
+      --panel: #142743;
+      --muted: #c4d4e8;
+      --blue: #63bee8;
+      --gold: #f4ca61;
+      --green: #66ddaf;
+      --red: #ffaea0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 280px;
+      min-height: 100vh;
+      margin: 0;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(18px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(18px, env(safe-area-inset-left));
+      background:
+        radial-gradient(ellipse at 50% -20%, #1b3856 0, transparent 56%),
+        var(--background);
+      color: #f8faff;
+    }
+
+    button {
+      min-height: 56px;
+      border: 0;
+      border-radius: 16px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      color: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 3px;
+    }
+
+    button:disabled { cursor: default; }
+
+    .app {
+      width: min(100%, 520px);
+      margin: 0 auto;
+    }
+
+    .brand {
+      margin: 8px 0 28px;
+      color: var(--blue);
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .11em;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .screen { display: grid; gap: 20px; }
+    .screen[hidden] { display: none; }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--blue);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-align: center;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: clamp(2.4rem, 11vw, 3.25rem);
+      line-height: 1.08;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.3rem, 6vw, 1.7rem);
+      line-height: 1.25;
+    }
+
+    .intro, .helper, .mode-note {
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .menu-screen { padding-top: 15vh; }
+
+    .card, .lesson-card, .feedback {
+      border: 1px solid #31577a;
+      border-radius: 20px;
+      background: var(--panel);
+    }
+
+    .action-card {
+      display: grid;
+      gap: 6px;
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid #31577a;
+      background: var(--panel);
+      text-align: center;
+    }
+
+    .action-card strong { font-size: 1.08rem; }
+    .action-card span { color: var(--muted); font-size: .92rem; font-weight: 400; }
+    .action-card.gold { border-color: var(--gold); }
+    .action-card.green { border-color: var(--green); }
+    .action-card.purple { border-color: #a492ff; }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar h2 {
+      grid-column: 2;
+      font-size: .95rem;
+      letter-spacing: .08em;
+      text-align: center;
+    }
+
+    .back-button {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+      min-height: 44px;
+      padding: 8px 10px;
+      background: transparent;
+      color: var(--blue);
+      font-size: .92rem;
+    }
+
+    .topic-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .topic-tab {
+      min-height: 54px;
+      padding: 10px;
+      border: 1px solid #31577a;
+      background: var(--panel);
+      font-size: .9rem;
+    }
+
+    .topic-tab[aria-pressed="true"] {
+      border-color: var(--gold);
+      background: #694719;
+    }
+
+    .lesson-card {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .lesson-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .mode-note { margin-bottom: 2px; }
+
+    .progress {
+      margin: 0;
+      color: var(--muted);
+      font-size: .95rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .quiz-topic {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .quiz-topic.lcm { color: var(--green); }
+
+    .question {
+      margin: 0;
+      font-size: clamp(2.6rem, 12vw, 3.25rem);
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .answers { display: grid; gap: 12px; }
+
+    .answer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      min-height: 64px;
+      padding: 12px 18px;
+      border: 1px solid #416285;
+      background: var(--panel);
+      text-align: left;
+    }
+
+    .answer-number {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--background);
+      color: var(--blue);
+    }
+
+    .answer-value { font-size: 1.25rem; }
+    .answer.correct { border-color: var(--green); background: #146954; }
+    .answer.wrong { border-color: #f77785; background: #7e303d; }
+
+    .feedback {
+      margin: 0;
+      padding: 16px;
+      color: var(--green);
+      line-height: 1.6;
+    }
+
+    .feedback.incorrect { color: var(--red); }
+
+    .next-button {
+      width: 100%;
+      padding: 12px 18px;
+      border: 1px solid var(--blue);
+      background: #245b81;
+    }
+
+    .result-score {
+      margin: 20px 0 0;
+      color: var(--gold);
+      font-size: 5rem;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .result-message {
+      margin: 8px 0;
+      font-size: 1.12rem;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    @media (max-height: 700px) {
+      .menu-screen { padding-top: 4vh; }
+      .brand { margin-bottom: 18px; }
+      .screen { gap: 15px; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      button { transition: transform 120ms ease, filter 120ms ease; }
+      button:active:not(:disabled) { transform: scale(.985); filter: brightness(1.12); }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <p class="brand">✦ МАТЕМАТИЧНІ ПРИГОДИ: НСД І НСК ✦</p>
+
+    <section class="screen menu-screen" id="menu-screen">
+      <p class="eyebrow">МАТЕМАТИЧНА ПРИГОДА</p>
+      <h1>НСД та НСК</h1>
+      <p class="intro">Вчимося знаходити спільні дільники й кратні!</p>
+      <button class="action-card gold" type="button" data-screen="lesson-screen">
+        <strong>Навчання</strong>
+        <span>Прочитай пояснення та приклади</span>
+      </button>
+      <button class="action-card green" type="button" data-screen="modes-screen">
+        <strong>Грати</strong>
+        <span>10 завдань — перевір свої знання</span>
+      </button>
+    </section>
+
+    <section class="screen" id="lesson-screen" hidden>
+      <header class="topbar">
+        <button class="back-button" type="button" data-screen="menu-screen">‹ Назад</button>
+        <h2>НАВЧАННЯ</h2>
+      </header>
+      <div class="topic-tabs" aria-label="Тема навчання">
+        <button class="topic-tab" type="button" data-lesson="gcd" aria-pressed="true">НСД — дільники</button>
+        <button class="topic-tab" type="button" data-lesson="lcm" aria-pressed="false">НСК — кратні</button>
+      </div>
+      <article class="lesson-card" id="lesson-content" aria-live="polite"></article>
+    </section>
+
+    <section class="screen" id="modes-screen" hidden>
+      <header class="topbar">
+        <button class="back-button" type="button" data-screen="menu-screen">‹ Назад</button>
+        <h2>ОБЕРИ ТРЕНУВАННЯ</h2>
+      </header>
+      <p class="mode-note">У кожній грі буде 10 запитань. За правильну відповідь — 10 балів.</p>
+      <button class="action-card gold" type="button" data-topic="gcd">
+        <strong>Знайди НСД</strong>
+        <span>Найбільший спільний дільник</span>
+      </button>
+      <button class="action-card green" type="button" data-topic="lcm">
+        <strong>Знайди НСК</strong>
+        <span>Найменше спільне кратне</span>
+      </button>
+      <button class="action-card purple" type="button" data-topic="mixed">
+        <strong>Мікс: НСД і НСК</strong>
+        <span>Обидві теми разом</span>
+      </button>
+    </section>
+
+    <section class="screen" id="quiz-screen" hidden>
+      <header class="topbar">
+        <button class="back-button" type="button" data-screen="modes-screen">‹ Назад</button>
+        <h2>ТРЕНУВАННЯ</h2>
+      </header>
+      <p class="progress" id="progress"></p>
+      <p class="quiz-topic" id="quiz-topic"></p>
+      <p class="question" id="question"></p>
+      <div class="answers" id="answers" aria-label="Варіанти відповіді"></div>
+      <p class="helper" id="quiz-helper">Торкнися відповіді, щоб обрати її.</p>
+      <p class="feedback" id="feedback" aria-live="polite" hidden></p>
+      <button class="next-button" id="next-button" type="button" hidden>Далі</button>
+    </section>
+
+    <section class="screen" id="results-screen" hidden>
+      <header class="topbar">
+        <button class="back-button" type="button" data-screen="menu-screen">‹ Меню</button>
+        <h2>ТВОЄ ДОСЯГНЕННЯ</h2>
+      </header>
+      <p class="result-score" id="result-score">0</p>
+      <p class="intro">балів із 100</p>
+      <p class="result-message" id="result-message"></p>
+      <button class="action-card green" id="play-again" type="button">
+        <strong>Зіграти ще раз</strong>
+      </button>
+      <button class="action-card" type="button" data-screen="menu-screen">
+        <strong>До меню</strong>
+      </button>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const screens = [...document.querySelectorAll(".screen")];
+    const gcdLesson = [
+      {
+        heading: "Найбільший спільний дільник (НСД)",
+        paragraphs: [
+          "Дільник числа — це число, на яке воно ділиться без остачі. Спільний дільник підходить одразу для двох чисел. Найбільший із таких дільників називається НСД.",
+          "Приклад: дільники 12 — 1, 2, 3, 4, 6, 12; дільники 18 — 1, 2, 3, 6, 9, 18. Спільні дільники: 1, 2, 3, 6. Отже, НСД(12, 18) = 6.",
+          "Перевірка: 12 : 6 = 2 і 18 : 6 = 3 — ділення без остачі."
+        ]
+      },
+      {
+        heading: "Найменше спільне кратне (НСК)",
+        paragraphs: [
+          "Кратні числа отримуємо, множачи число на 1, 2, 3 і так далі. НСК — найменше додатне число, яке є кратним обох чисел.",
+          "Приклад: кратні 4 — 4, 8, 12, 16, 20, ...; кратні 6 — 6, 12, 18, 24, ... Перше спільне кратне — 12. Отже, НСК(4, 6) = 12.",
+          "Можна скористатися формулою: НСК(a, b) = a × b : НСД(a, b)."
+        ]
+      }
+    ];
+
+    const state = {
+      lessonTopic: "gcd",
+      gameTopic: "mixed",
+      questionNumber: 0,
+      score: 0,
+      question: null,
+      answered: false
+    };
+
+    const lessonContent = document.querySelector("#lesson-content");
+    const progress = document.querySelector("#progress");
+    const quizTopic = document.querySelector("#quiz-topic");
+    const questionText = document.querySelector("#question");
+    const answers = document.querySelector("#answers");
+    const helper = document.querySelector("#quiz-helper");
+    const feedback = document.querySelector("#feedback");
+    const nextButton = document.querySelector("#next-button");
+
+    function showScreen(id) {
+      for (const screen of screens) {
+        screen.hidden = screen.id !== id;
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderLesson() {
+      const lesson = state.lessonTopic === "gcd" ? gcdLesson[0] : gcdLesson[1];
+      lessonContent.replaceChildren();
+
+      const heading = document.createElement("h2");
+      heading.textContent = lesson.heading;
+      lessonContent.append(heading);
+
+      for (const paragraphText of lesson.paragraphs) {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = paragraphText;
+        lessonContent.append(paragraph);
+      }
+
+      for (const tab of document.querySelectorAll("[data-lesson]")) {
+        tab.setAttribute("aria-pressed", String(tab.dataset.lesson === state.lessonTopic));
+      }
+    }
+
+    function gcd(a, b) {
+      while (b !== 0) {
+        [a, b] = [b, a % b];
+      }
+      return a;
+    }
+
+    function lcm(a, b) {
+      return (a / gcd(a, b)) * b;
+    }
+
+    function makeQuestion() {
+      const first = randomInt(2, 12);
+      const second = randomInt(2, 12);
+      const topic = state.gameTopic === "mixed"
+        ? (Math.random() < 0.5 ? "gcd" : "lcm")
+        : state.gameTopic;
+      const answer = topic === "gcd" ? gcd(first, second) : lcm(first, second);
+      const options = new Set([answer]);
+      const limit = topic === "gcd" ? 16 : 150;
+
+      while (options.size < 4) {
+        options.add(randomInt(1, limit));
+      }
+
+      const explanation = topic === "gcd"
+        ? `Спільні дільники: ${commonDivisors(first, second).join(", ")}. Найбільший — НСД.`
+        : `НСК = перше спільне кратне. За формулою: ${first} × ${second} : ${gcd(first, second)} = ${answer}.`;
+
+      return {
+        first,
+        second,
+        topic,
+        answer,
+        options: shuffle([...options]),
+        explanation
+      };
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function commonDivisors(a, b) {
+      const result = [];
+      for (let divisor = 1; divisor <= gcd(a, b); divisor += 1) {
+        if (a % divisor === 0 && b % divisor === 0) {
+          result.push(divisor);
+        }
+      }
+      return result;
+    }
+
+    function shuffle(items) {
+      for (let index = items.length - 1; index > 0; index -= 1) {
+        const other = randomInt(0, index);
+        [items[index], items[other]] = [items[other], items[index]];
+      }
+      return items;
+    }
+
+    function startGame(topic) {
+      state.gameTopic = topic;
+      state.questionNumber = 0;
+      state.score = 0;
+      state.answered = false;
+      state.question = makeQuestion();
+      renderQuestion();
+      showScreen("quiz-screen");
+    }
+
+    function renderQuestion() {
+      const current = state.question;
+      state.answered = false;
+      progress.textContent = `Запитання ${state.questionNumber + 1} із 10 · Бали: ${state.score}`;
+      quizTopic.textContent = current.topic === "gcd" ? "Знайди НСД" : "Знайди НСК";
+      quizTopic.classList.toggle("lcm", current.topic === "lcm");
+      questionText.textContent = `(${current.first}, ${current.second}) = ?`;
+      answers.replaceChildren();
+      helper.hidden = false;
+      feedback.hidden = true;
+      feedback.classList.remove("incorrect");
+      nextButton.hidden = true;
+      nextButton.textContent = state.questionNumber === 9 ? "Результат" : "Далі";
+
+      current.options.forEach((value, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer";
+        button.setAttribute("aria-label", `Варіант ${index + 1}: ${value}`);
+
+        const number = document.createElement("span");
+        number.className = "answer-number";
+        number.textContent = String(index + 1);
+        const choice = document.createElement("span");
+        choice.className = "answer-value";
+        choice.textContent = String(value);
+        button.append(number, choice);
+        button.addEventListener("click", () => selectAnswer(value, button));
+        answers.append(button);
+      });
+    }
+
+    function selectAnswer(value, selectedButton) {
+      if (state.answered) return;
+      state.answered = true;
+      const current = state.question;
+      const isCorrect = value === current.answer;
+      if (isCorrect) state.score += 10;
+
+      for (const button of answers.querySelectorAll(".answer")) {
+        button.disabled = true;
+        const choice = Number(button.querySelector(".answer-value").textContent);
+        if (choice === current.answer) button.classList.add("correct");
+      }
+      if (!isCorrect) selectedButton.classList.add("wrong");
+
+      progress.textContent = `Запитання ${state.questionNumber + 1} із 10 · Бали: ${state.score}`;
+      helper.hidden = true;
+      feedback.textContent = isCorrect
+        ? `Правильно! ${current.explanation}`
+        : `Правильна відповідь: ${current.answer}. ${current.explanation}`;
+      feedback.classList.toggle("incorrect", !isCorrect);
+      feedback.hidden = false;
+      nextButton.hidden = false;
+    }
+
+    function nextQuestion() {
+      if (!state.answered) return;
+      if (state.questionNumber === 9) {
+        renderResults();
+        showScreen("results-screen");
+        return;
+      }
+      state.questionNumber += 1;
+      state.question = makeQuestion();
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderResults() {
+      document.querySelector("#result-score").textContent = String(state.score);
+      document.querySelector("#result-message").textContent =
+        state.score === 100
+          ? "Чудово! Ти справжній майстер НСД і НСК!"
+          : state.score >= 70
+            ? "Дуже добре! Ще трохи практики — і буде ідеально."
+            : state.score >= 40
+              ? "Гарна робота! Повтори приклади та спробуй ще."
+              : "Не здавайся! Навчання допоможе розібратися.";
+    }
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      if (button.dataset.screen) {
+        showScreen(button.dataset.screen);
+      } else if (button.dataset.lesson) {
+        state.lessonTopic = button.dataset.lesson;
+        renderLesson();
+      } else if (button.dataset.topic) {
+        startGame(button.dataset.topic);
+      }
+    });
+
+    document.querySelector("#next-button").addEventListener("click", nextQuestion);
+    document.querySelector("#play-again").addEventListener("click", () => {
+      startGame(state.gameTopic);
+    });
+
+    renderLesson();
+  </script>
+</body>
+</html>
